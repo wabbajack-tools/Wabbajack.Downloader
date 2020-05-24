@@ -10,19 +10,19 @@ namespace Wabbajack.Downloader.NexusMods
 {
     public class NexusAPIClient : IDisposable
     {
-        internal Client HttpClient { get; } = new Client();
+        public Client HttpClient { get; } = new Client();
 
         internal string ApiKey { get; }
 
         public int MaxRetries { get; set; } = 4;
 
-        public NexusAPIClient(string userAgent, string applicationName, string applicationVersion, string apiKey)
+        public NexusAPIClient(string applicationName, string applicationVersion, string apiKey, string userAgent = "")
         {
             ApiKey = apiKey;
 
             HttpClient.Headers.AddRange(new List<(string, string?)>
             {
-                ("User-Agent", userAgent),
+                ("User-Agent", string.IsNullOrEmpty(userAgent) ? Client.DefaultUserAgent : userAgent),
                 ("apikey", apiKey),
                 ("Accept", "application/json"),
                 ("Application-Name", applicationName),

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Wabbajack.Downloader.Common
@@ -13,6 +15,17 @@ namespace Wabbajack.Downloader.Common
         public List<Cookie> Cookies = new List<Cookie>();
 
         public int MaxRetries { get; set; } = 4;
+
+        public static string DefaultUserAgent
+        {
+            get
+            {
+                var platformType = Environment.Is64BitOperatingSystem ? "x64" : "x86";
+                var headerString =
+                    $"Wabbajack.Downloader/{Assembly.GetEntryAssembly()?.GetName()?.Version ?? new Version(0, 1)} ({Environment.OSVersion.VersionString}; {platformType}) {RuntimeInformation.FrameworkDescription}";
+                return headerString;
+            }
+        }
 
         public async Task<HttpResponseMessage> GetAsync(string url, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
         {
