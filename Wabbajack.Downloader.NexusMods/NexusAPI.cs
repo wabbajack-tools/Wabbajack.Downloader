@@ -110,11 +110,16 @@ namespace Wabbajack.Downloader.NexusMods
             }
         }
 
+        public async Task<UserStatus> GetUserStatus()
+        {
+            return await Get<UserStatus>("https://api.nexusmods.com/v1/users/validate.json");
+        }
+
         public async Task<string> GetNexusDownloadLink(string game, int modID, int fileID)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var url = $"https://api.nexusmods.com/v1/games/{game}/mods/{modID}/files/{fileID}/download_link.json";
-            return (await Get<List<DownloadLink>>(url)).First().Uri;
+            return (await Get<List<DownloadLink>>(url)).First().URI;
         }
 
         public async Task<GetModFilesResponse> GetModFiles(string game, int modID)

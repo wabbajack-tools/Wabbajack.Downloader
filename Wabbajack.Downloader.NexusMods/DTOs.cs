@@ -77,7 +77,7 @@ namespace Wabbajack.Downloader.NexusMods
 
     public class DownloadLink
     {
-        public string Uri { get; } = string.Empty;
+        public string URI { get; set; } = string.Empty;
     }
 
     public class GetModFilesResponse
