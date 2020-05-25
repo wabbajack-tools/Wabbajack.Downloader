@@ -12,11 +12,11 @@ namespace Wabbajack.Downloader.NexusMods
     {
         public Client HttpClient { get; } = new Client();
 
-        public string ApiKey { get; set; }
+        public string? ApiKey { get; set; }
 
         public int MaxRetries { get; set; } = 4;
 
-        public NexusAPIClient(string applicationName, string applicationVersion, string apiKey, string userAgent = "")
+        public NexusAPIClient(string applicationName, string applicationVersion, string? apiKey, string userAgent = "")
         {
             ApiKey = apiKey;
 
