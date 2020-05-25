@@ -27,49 +27,49 @@ namespace Wabbajack.Downloader.Common
             }
         }
 
-        public async Task<HttpResponseMessage> GetAsync(string url, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
+        public virtual async Task<HttpResponseMessage> GetAsync(string url, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             return await SendAsync(request, responseHeadersRead, errorsAsExceptions: errorsAsExceptions);
         }
 
-        public async Task<HttpResponseMessage> GetAsync(Uri url, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
+        public virtual async Task<HttpResponseMessage> GetAsync(Uri url, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             return await SendAsync(request, responseHeadersRead, errorsAsExceptions: errorsAsExceptions);
         }
 
-        public async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
+        public virtual async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
             return await SendAsync(request, responseHeadersRead, errorsAsExceptions);
         }
 
-        public async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead)
+        public virtual async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead)
         {
             var request = new HttpRequestMessage(HttpMethod.Put, url) { Content = content };
             return await SendAsync(request, responseHeadersRead);
         }
 
-        public async Task<string> GetStringAsync(string url)
+        public virtual async Task<string> GetStringAsync(string url)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             return await SendStringAsync(request);
         }
 
-        public async Task<string> GetStringAsync(Uri url)
+        public virtual async Task<string> GetStringAsync(Uri url)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             return await SendStringAsync(request);
         }
 
-        public async Task<string> DeleteStringAsync(string url)
+        public virtual async Task<string> DeleteStringAsync(string url)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, url);
             return await SendStringAsync(request);
         }
 
-        private async Task<string> SendStringAsync(HttpRequestMessage request)
+        public virtual async Task<string> SendStringAsync(HttpRequestMessage request)
         {
             using var result = await SendAsync(request);
             if (!result.IsSuccessStatusCode)
@@ -80,7 +80,7 @@ namespace Wabbajack.Downloader.Common
             return await result.Content.ReadAsStringAsync();
         }
 
-        public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage msg, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
+        public virtual async Task<HttpResponseMessage> SendAsync(HttpRequestMessage msg, HttpCompletionOption responseHeadersRead = HttpCompletionOption.ResponseHeadersRead, bool errorsAsExceptions = true)
         {
             foreach (var (k, v) in Headers)
                 msg.Headers.Add(k, v);

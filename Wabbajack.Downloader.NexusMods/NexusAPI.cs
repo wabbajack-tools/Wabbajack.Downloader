@@ -8,11 +8,11 @@ using Wabbajack.Downloader.Common;
 
 namespace Wabbajack.Downloader.NexusMods
 {
-    public class NexusAPIClient : IDisposable
+    public class NexusAPIClient
     {
         public Client HttpClient { get; } = new Client();
 
-        internal string ApiKey { get; }
+        public string ApiKey { get; set; }
 
         public int MaxRetries { get; set; } = 4;
 
@@ -35,7 +35,7 @@ namespace Wabbajack.Downloader.NexusMods
         private readonly object _remainingLock = new object();
 
         private int _dailyRemaining;
-        public int DailyRemaining
+        public virtual int DailyRemaining
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Wabbajack.Downloader.NexusMods
         }
 
         private int _hourlyRemaining;
-        public int HourlyRemaining
+        public virtual int HourlyRemaining
         {
             get
             {
@@ -73,7 +73,7 @@ namespace Wabbajack.Downloader.NexusMods
 
         }
 
-        protected virtual async Task UpdateRemaining(HttpResponseMessage response)
+        public virtual async Task UpdateRemaining(HttpResponseMessage response)
         {
             var dailyRemaining = int.Parse(response.Headers.GetValues("x-rl-daily-remaining").First());
             var hourlyRemaining = int.Parse(response.Headers.GetValues("x-rl-hourly-remaining").First());
@@ -87,7 +87,7 @@ namespace Wabbajack.Downloader.NexusMods
 
         #endregion
 
-        public async Task<T> Get<T>(string url)
+        public virtual async Task<T> Get<T>(string url)
         {
             var retries = 0;
             TOP:
@@ -110,19 +110,19 @@ namespace Wabbajack.Downloader.NexusMods
             }
         }
 
-        public async Task<UserStatus> GetUserStatus()
+        public virtual async Task<UserStatus> GetUserStatus()
         {
             return await Get<UserStatus>("https://api.nexusmods.com/v1/users/validate.json");
         }
 
-        public async Task<string> GetNexusDownloadLink(string game, int modID, int fileID)
+        public virtual async Task<string> GetNexusDownloadLink(string game, int modID, int fileID)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var url = $"https://api.nexusmods.com/v1/games/{game}/mods/{modID}/files/{fileID}/download_link.json";
             return (await Get<List<DownloadLink>>(url)).First().URI;
         }
 
-        public async Task<GetModFilesResponse> GetModFiles(string game, int modID)
+        public virtual async Task<GetModFilesResponse> GetModFiles(string game, int modID)
         {
             var url = $"https://api.nexusmods.com/v1/games/{game}/mods/{modID}/files.json";
             var result = await Get<GetModFilesResponse>(url);
@@ -130,7 +130,5 @@ namespace Wabbajack.Downloader.NexusMods
                 throw new InvalidOperationException("Got Null data from the Nexus while finding mod files");
             return result;
         }
-
-        public void Dispose() {  }
     }
 }
